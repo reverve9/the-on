@@ -1,0 +1,19 @@
+{
+  "name": "the-on",
+  "version": "1.0.0",
+  "private": true,
+  "packageManager": "pnpm@9.0.0",
+  "scripts": {
+    "dev": "turbo run dev",
+    "dev:web": "turbo run dev --filter=@the-on/web",
+    "dev:admin": "turbo run dev --filter=@the-on/admin",
+    "build": "turbo run build",
+    "build:web": "turbo run build --filter=@the-on/web",
+    "build:admin": "turbo run build --filter=@the-on/admin",
+    "lint": "turbo run lint",
+    "clean": "turbo run clean && rm -rf node_modules"
+  },
+  "devDependencies": {
+    "turbo": "^2.0.0"
+  }
+}
