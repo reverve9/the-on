@@ -70,7 +70,7 @@ export function useArticles(options?: {
       let query = supabase
         .from('articles')
         .select('*')
-        .eq('region_id', regionData.id)
+        .eq('region_id', (regionData as { id: string }).id)
         .eq('is_active', true)
         .order('published_at', { ascending: false })
 
