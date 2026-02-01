@@ -83,7 +83,7 @@ export function useArticles(options?: {
           .single()
 
         if (categoryData) {
-          query = query.eq('category_id', categoryData.id)
+          query = query.eq('category_id', (categoryData as { id: string }).id)
         }
       }
 
@@ -102,7 +102,7 @@ export function useArticles(options?: {
       if (error) {
         setError(error.message)
       } else {
-        setArticles(data || [])
+        setArticles((data as Article[]) || [])
       }
       setLoading(false)
     }
@@ -133,7 +133,7 @@ export function useCategories() {
       if (error) {
         setError(error.message)
       } else {
-        setCategories(data || [])
+        setCategories((data as Category[]) || [])
       }
       setLoading(false)
     }
@@ -165,9 +165,10 @@ export function useArticle(id: string) {
       if (error) {
         setError(error.message)
       } else {
-        setArticle(data)
+        setArticle(data as Article)
         // 조회수 증가
         if (data) {
+          // @ts-ignore - RPC function not in type definition
           supabase.rpc('increment_view_count', { article_id: id })
         }
       }
