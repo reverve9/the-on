@@ -1,6 +1,4 @@
 import { Link } from 'react-router-dom'
-import Badge from '../ui/Badge'
-import { Text } from '../ui/Typography'
 
 // ============================================
 // ArticleCard - 일반 뉴스 카드
@@ -11,7 +9,6 @@ interface ArticleCardProps {
   summary?: string
   thumbnail?: string
   category?: string
-  categorySlug?: string
   source?: string
   date?: string
   className?: string
@@ -23,7 +20,6 @@ export function ArticleCard({
   summary,
   thumbnail,
   category,
-  categorySlug = 'news',
   source,
   date,
   className = '',
@@ -51,22 +47,22 @@ export function ArticleCard({
         {/* 콘텐츠 */}
         <div>
           {category && (
-            <Badge variant={categorySlug as 'news' | 'culture' | 'life' | 'community'} size="sm" className="mb-2">
+            <span className="inline-block px-2 py-1 bg-primary-100 text-primary-700 text-xs font-medium rounded mb-2">
               {category}
-            </Badge>
+            </span>
           )}
           <h3 className="font-medium text-gray-900 line-clamp-2 group-hover:text-primary-600 transition-colors">
             {title}
           </h3>
           {summary && (
-            <Text variant="caption" className="mt-2 line-clamp-2">
+            <p className="text-sm text-gray-500 mt-2 line-clamp-2">
               {summary}
-            </Text>
+            </p>
           )}
-          <div className="flex items-center gap-2 mt-3">
-            {source && <Text variant="small">{source}</Text>}
-            {source && date && <Text variant="small">·</Text>}
-            {date && <Text variant="small">{date}</Text>}
+          <div className="flex items-center gap-2 mt-3 text-sm text-gray-500">
+            {source && <span>{source}</span>}
+            {source && date && <span>·</span>}
+            {date && <span>{date}</span>}
           </div>
         </div>
       </Link>
@@ -81,7 +77,6 @@ interface ArticleCardLargeProps {
   id: string
   title: string
   category?: string
-  categorySlug?: string
   source?: string
   date?: string
   thumbnail?: string
@@ -99,7 +94,6 @@ export function ArticleCardLarge({
   id,
   title,
   category,
-  categorySlug = 'news',
   source,
   date,
   thumbnail,
@@ -131,9 +125,9 @@ export function ArticleCardLarge({
           {/* 콘텐츠 */}
           <div className="absolute bottom-0 left-0 right-0 p-5">
             {category && (
-              <Badge variant={categorySlug as 'news' | 'culture' | 'life' | 'community'} size="sm" className="mb-2">
+              <span className="inline-block px-2 py-1 bg-primary-500 text-white text-xs font-medium rounded mb-2">
                 {category}
-              </Badge>
+              </span>
             )}
             <h3 className="font-bold text-white line-clamp-2 group-hover:underline text-lg">
               {title}
@@ -151,11 +145,12 @@ export function ArticleCardLarge({
 }
 
 // ============================================
-// ArticleListItem - 리스트형 아이템
+// ArticleListItem - 리스트형 아이템 (썸네일 70x70, 3줄 구조)
 // ============================================
 interface ArticleListItemProps {
   id: string
   title: string
+  summary?: string
   thumbnail?: string
   source?: string
   date?: string
@@ -166,21 +161,22 @@ interface ArticleListItemProps {
 export function ArticleListItem({
   id,
   title,
+  summary,
   thumbnail,
   source,
   date,
-  showThumbnail = false,
+  showThumbnail = true,
   className = '',
 }: ArticleListItemProps) {
   return (
     <article className={`group ${className}`}>
       <Link 
         to={`/article/${id}`} 
-        className="flex items-center gap-4 py-3 border-b border-gray-100 last:border-0 hover:bg-gray-50 -mx-2 px-2 rounded-lg transition-colors"
+        className="grid grid-cols-[60px_1fr] gap-4 py-3 hover:bg-gray-50 -mx-2 px-2 rounded-lg transition-colors"
       >
-        {/* 썸네일 (선택적) */}
+        {/* 썸네일 60x60 1:1 */}
         {showThumbnail && (
-          <div className="w-20 h-20 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0">
+          <div className="w-[60px] h-[60px] bg-gray-100 rounded-lg overflow-hidden">
             {thumbnail ? (
               <img
                 src={thumbnail}
@@ -197,16 +193,19 @@ export function ArticleListItem({
           </div>
         )}
 
-        {/* 콘텐츠 */}
-        <div className="flex-1 min-w-0">
-          <h3 className="text-base font-medium text-gray-800 line-clamp-1 group-hover:text-primary-600 transition-colors">
+        {/* 콘텐츠 - 3줄 구조 */}
+        <div className="min-w-0">
+          <h3 className="text-base font-medium text-gray-800 truncate group-hover:text-primary-600 transition-colors">
             {title}
           </h3>
-          <div className="flex items-center gap-2 mt-1.5">
-            {source && <span className="text-sm text-gray-500">{source}</span>}
-            {source && date && <span className="text-sm text-gray-300">·</span>}
-            {date && <span className="text-sm text-gray-500">{date}</span>}
-          </div>
+          {summary && (
+            <p className="text-sm text-gray-500 truncate mt-1">
+              {summary}
+            </p>
+          )}
+          <p className="text-xs text-gray-400 truncate mt-1.5">
+            {source}{source && date && ' · '}{date}
+          </p>
         </div>
       </Link>
     </article>

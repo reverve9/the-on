@@ -2,9 +2,10 @@ import { Routes, Route, Navigate } from 'react-router-dom'
 import AdminLayout from './components/AdminLayout'
 import LoginPage from './pages/LoginPage'
 import DashboardPage from './pages/DashboardPage'
-import ArticlesPage from './pages/ArticlesPage'
-import ArticleEditPage from './pages/ArticleEditPage'
-import CategoriesPage from './pages/CategoriesPage'
+import ContentsPage from './pages/ContentsPage'
+import CrawlPage from './pages/CrawlPage'
+import AdsPage from './pages/AdsPage'
+import AdsNewPage from './pages/AdsNewPage'
 import RegionsPage from './pages/RegionsPage'
 import UsersPage from './pages/UsersPage'
 
@@ -15,10 +16,10 @@ function App() {
       <Route path="/" element={<AdminLayout />}>
         <Route index element={<Navigate to="/dashboard" replace />} />
         <Route path="dashboard" element={<DashboardPage />} />
-        <Route path="articles" element={<ArticlesPage />} />
-        <Route path="articles/new" element={<ArticleEditPage />} />
-        <Route path="articles/:id" element={<ArticleEditPage />} />
-        <Route path="categories" element={<CategoriesPage />} />
+        <Route path="contents" element={<ContentsPage />} />
+        <Route path="crawl" element={<CrawlPage />} />
+        <Route path="ads" element={<AdsPage />} />
+        <Route path="ads/new" element={<AdsNewPage />} />
         <Route path="regions" element={<RegionsPage />} />
         <Route path="users" element={<UsersPage />} />
       </Route>

@@ -1,0 +1,11 @@
+{
+  "crons": [
+    {
+      "path": "/api/cron-crawl",
+      "schedule": "0 * * * *"
+    }
+  ],
+  "env": {
+    "SUPABASE_SERVICE_ROLE_KEY": "@supabase_service_role_key"
+  }
+}
