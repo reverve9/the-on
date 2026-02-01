@@ -218,7 +218,6 @@ function ArticleSection({
 
 export default function HomePage() {
   const { regionName } = useRegion()
-  const featuredHeight = 230
 
   // DB에서 데이터 가져오기
   const { articles: featuredArticles, loading: featuredLoading } = useArticles({ featured: true, limit: 1 })

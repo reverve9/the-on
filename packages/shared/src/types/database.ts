@@ -118,9 +118,10 @@ export interface Database {
           id: string
           title: string
           summary: string | null
+          content: string | null
           source_url: string | null
           source_name: string | null
-          source_type: 'crawled' | 'original'
+          source_type: 'crawled' | 'original' | 'public'
           thumbnail_url: string | null
           category_id: string
           region_id: string
@@ -135,9 +136,10 @@ export interface Database {
           id?: string
           title: string
           summary?: string | null
+          content?: string | null
           source_url?: string | null
           source_name?: string | null
-          source_type?: 'crawled' | 'original'
+          source_type?: 'crawled' | 'original' | 'public'
           thumbnail_url?: string | null
           category_id: string
           region_id: string
@@ -152,9 +154,10 @@ export interface Database {
           id?: string
           title?: string
           summary?: string | null
+          content?: string | null
           source_url?: string | null
           source_name?: string | null
-          source_type?: 'crawled' | 'original'
+          source_type?: 'crawled' | 'original' | 'public'
           thumbnail_url?: string | null
           category_id?: string
           region_id?: string
