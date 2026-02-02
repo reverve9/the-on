@@ -43,6 +43,7 @@ export function useArticles(options?: {
   categorySlug?: string
   limit?: number
   featured?: boolean
+  sourceType?: 'crawled' | 'original' | 'public'
 }) {
   const { regionSlug } = useRegion()
   const [articles, setArticles] = useState<Article[]>([])
@@ -92,6 +93,11 @@ export function useArticles(options?: {
         query = query.eq('is_featured', true)
       }
 
+      // source_type 필터
+      if (options?.sourceType) {
+        query = query.eq('source_type', options.sourceType)
+      }
+
       // 개수 제한
       if (options?.limit) {
         query = query.limit(options.limit)
@@ -108,7 +114,7 @@ export function useArticles(options?: {
     }
 
     fetchArticles()
-  }, [regionSlug, options?.categorySlug, options?.limit, options?.featured])
+  }, [regionSlug, options?.categorySlug, options?.limit, options?.featured, options?.sourceType])
 
   return { articles, loading, error }
 }

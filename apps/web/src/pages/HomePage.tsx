@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { SectionHeader } from '../components/common'
-import { ArticleListItem } from '../components/article'
 import { useRegion } from '../contexts'
 import { useArticles } from '../hooks'
 import { formatRelativeTime } from '@the-on/shared'
@@ -20,7 +19,7 @@ const notices = [
   { id: '2', title: '커뮤니티 이용 규칙 안내', date: '01.28' },
 ]
 
-// 배너 슬라이더 컴포넌트 (메인 2열 전체 너비)
+// 배너 슬라이더 컴포넌트
 function BannerSlider() {
   const [current, setCurrent] = useState(0)
 
@@ -58,7 +57,6 @@ function BannerSlider() {
         ))}
       </div>
 
-      {/* 좌우 화살표 */}
       <button
         onClick={goToPrev}
         className="absolute left-3 top-1/2 -translate-y-1/2 w-8 h-8 bg-white/20 hover:bg-white/30 rounded-full flex items-center justify-center transition-colors"
@@ -76,7 +74,6 @@ function BannerSlider() {
         </svg>
       </button>
 
-      {/* 인디케이터 점 */}
       <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1.5">
         {bannerData.map((_, idx) => (
           <button
@@ -92,39 +89,46 @@ function BannerSlider() {
   )
 }
 
-// 세로 무한 슬라이딩 컴포넌트
-function VerticalSlider({ articles }: { articles: Article[] }) {
+// 더온 오리지널 - 세로 슬라이딩 컴포넌트
+function OriginalVerticalSlider({ articles }: { articles: Article[] }) {
+  const navigate = useNavigate()
+  
   if (articles.length === 0) {
     return (
       <div className="h-full flex items-center justify-center text-gray-400 text-sm">
-        콘텐츠가 없습니다
+        오리지널 콘텐츠가 없습니다
       </div>
     )
   }
 
+  const handleClick = (article: Article) => {
+    // 카테고리 페이지로 이동하며 기사 ID 전달
+    navigate(`/category/news?article=${article.id}`)
+  }
+
   const SliderItem = ({ article }: { article: Article }) => (
-    <Link
-      to={`/article/${article.id}`}
-      className="grid grid-cols-[60px_1fr] gap-3 p-3 hover:bg-gray-50 transition-colors"
+    <div
+      onClick={() => handleClick(article)}
+      className="grid grid-cols-[60px_1fr] gap-3 p-3 hover:bg-primary-50 transition-colors cursor-pointer"
     >
       <div className="w-[60px] h-[60px] bg-gray-100 rounded-lg overflow-hidden">
         {article.thumbnail_url ? (
           <img src={article.thumbnail_url} alt={article.title} className="w-full h-full object-cover" />
         ) : (
-          <div className="w-full h-full flex items-center justify-center">
-            <svg className="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="w-full h-full flex items-center justify-center bg-primary-100">
+            <svg className="w-6 h-6 text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
             </svg>
           </div>
         )}
       </div>
       <div className="min-w-0">
-        <h4 className="text-sm font-medium text-gray-900 truncate">{article.title}</h4>
-        <p className="text-xs text-gray-500 mt-1 truncate">
-          {article.source_name} · {article.published_at ? formatRelativeTime(article.published_at) : ''}
+        <h4 className="text-sm font-medium text-gray-900 line-clamp-2">{article.title}</h4>
+        <p className="text-xs text-gray-500 mt-1">
+          {article.published_at ? formatRelativeTime(article.published_at) : ''}
         </p>
       </div>
-    </Link>
+    </div>
   )
 
   return (
@@ -133,7 +137,7 @@ function VerticalSlider({ articles }: { articles: Article[] }) {
         {articles.map((article) => (
           <SliderItem key={article.id} article={article} />
         ))}
-        {articles.map((article) => (
+        {articles.length > 2 && articles.map((article) => (
           <SliderItem key={`dup-${article.id}`} article={article} />
         ))}
       </div>
@@ -141,42 +145,79 @@ function VerticalSlider({ articles }: { articles: Article[] }) {
   )
 }
 
-// 대표 콘텐츠 카드
-function FeaturedCard({ article }: { article: Article | null }) {
+// 더온 오리지널 메인 카드
+function OriginalMainCard({ article }: { article: Article | null }) {
+  const navigate = useNavigate()
+
   if (!article) {
     return (
-      <div className="relative aspect-video bg-gray-200 rounded-2xl overflow-hidden flex items-center justify-center">
-        <span className="text-gray-400">대표 콘텐츠 없음</span>
+      <div className="relative aspect-video bg-gradient-to-br from-primary-100 to-primary-200 rounded-2xl overflow-hidden flex items-center justify-center">
+        <div className="text-center">
+          <span className="text-primary-400 text-lg">✨</span>
+          <p className="text-primary-500 mt-2">더온 오리지널 콘텐츠를 준비 중입니다</p>
+        </div>
       </div>
     )
   }
 
+  const handleClick = () => {
+    navigate(`/category/news?article=${article.id}`)
+  }
+
   return (
-    <Link to={`/article/${article.id}`} className="block">
+    <div onClick={handleClick} className="block cursor-pointer">
       <div className="relative aspect-video bg-gray-200 rounded-2xl overflow-hidden">
         {article.thumbnail_url ? (
           <img src={article.thumbnail_url} alt={article.title} className="w-full h-full object-cover" />
         ) : (
-          <div className="w-full h-full flex items-center justify-center text-gray-400">
-            <svg className="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary-400 to-primary-600">
+            <svg className="w-16 h-16 text-white/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
             </svg>
           </div>
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
         <div className="absolute bottom-0 left-0 right-0 p-5">
-          <span className="inline-block px-2 py-1 bg-primary-500 text-white text-xs font-medium rounded mb-2">
-            대표 콘텐츠
+          <span className="inline-block px-2 py-1 bg-accent-500 text-white text-xs font-medium rounded mb-2">
+            ✨ 더온 오리지널
           </span>
           <h3 className="font-bold text-white text-lg leading-tight line-clamp-2">
             {article.title}
           </h3>
           <p className="text-sm text-white/70 mt-2">
-            {article.source_name} · {article.published_at ? formatRelativeTime(article.published_at) : ''}
+            {article.published_at ? formatRelativeTime(article.published_at) : ''}
           </p>
         </div>
       </div>
-    </Link>
+    </div>
+  )
+}
+
+// 홈 기사 카드 (카테고리 페이지로 이동)
+function HomeArticleCard({ article, categorySlug }: { article: Article, categorySlug: string }) {
+  const navigate = useNavigate()
+
+  const handleClick = () => {
+    navigate(`/category/${categorySlug}?article=${article.id}`)
+  }
+
+  return (
+    <div 
+      onClick={handleClick}
+      className="flex items-center gap-3 py-3 border-b border-gray-100 last:border-0 cursor-pointer hover:bg-gray-50 transition-colors px-1 -mx-1 rounded"
+    >
+      {article.thumbnail_url && (
+        <div className="w-16 h-12 bg-gray-100 rounded overflow-hidden flex-shrink-0">
+          <img src={article.thumbnail_url} alt="" className="w-full h-full object-cover" />
+        </div>
+      )}
+      <div className="flex-1 min-w-0">
+        <h4 className="text-sm font-medium text-gray-900 line-clamp-2">{article.title}</h4>
+        <p className="text-xs text-gray-500 mt-1">
+          {article.source_name || '더온'} · {article.published_at ? formatRelativeTime(article.published_at) : ''}
+        </p>
+      </div>
+    </div>
   )
 }
 
@@ -184,11 +225,13 @@ function FeaturedCard({ article }: { article: Article | null }) {
 function ArticleSection({ 
   title, 
   moreLink, 
+  categorySlug,
   articles, 
   loading 
 }: { 
   title: string
   moreLink: string
+  categorySlug: string
   articles: Article[]
   loading: boolean
 }) {
@@ -200,12 +243,10 @@ function ArticleSection({
           <div className="py-8 text-center text-gray-400">로딩 중...</div>
         ) : articles.length > 0 ? (
           articles.map((article) => (
-            <ArticleListItem
-              key={article.id}
-              id={article.id}
-              title={article.title}
-              source={article.source_name || ''}
-              date={article.published_at ? formatRelativeTime(article.published_at) : ''}
+            <HomeArticleCard 
+              key={article.id} 
+              article={article} 
+              categorySlug={categorySlug}
             />
           ))
         ) : (
@@ -219,16 +260,19 @@ function ArticleSection({
 export default function HomePage() {
   const { regionName } = useRegion()
 
-  // DB에서 데이터 가져오기
-  const { articles: featuredArticles, loading: featuredLoading } = useArticles({ featured: true, limit: 1 })
-  const { articles: recentArticles, loading: recentLoading } = useArticles({ limit: 6 })
+  // 더온 오리지널 콘텐츠 (source_type: 'original')
+  const { articles: originalArticles, loading: originalLoading } = useArticles({ sourceType: 'original', limit: 6 })
+  
+  // 카테고리별 콘텐츠
   const { articles: newsArticles, loading: newsLoading } = useArticles({ categorySlug: 'news', limit: 4 })
   const { articles: cultureArticles, loading: cultureLoading } = useArticles({ categorySlug: 'culture', limit: 4 })
   const { articles: lifeArticles, loading: lifeLoading } = useArticles({ categorySlug: 'life', limit: 4 })
   const { articles: travelArticles, loading: travelLoading } = useArticles({ categorySlug: 'travel', limit: 4 })
   const { articles: communityArticles, loading: communityLoading } = useArticles({ categorySlug: 'community', limit: 4 })
 
-  const featuredArticle = featuredArticles[0] || null
+  // 더온 오리지널: 첫 번째는 메인, 나머지는 슬라이더
+  const mainOriginal = originalArticles[0] || null
+  const sliderOriginals = originalArticles.slice(1)
 
   return (
     <div className="px-5">
@@ -236,29 +280,30 @@ export default function HomePage() {
         <div className="flex gap-[30px] py-8">
           {/* 메인 콘텐츠 영역 (850px) */}
           <main className="w-[850px] flex-shrink-0 bg-white rounded-2xl p-6">
-            {/* 배너 - 2열 전체 너비 */}
+            {/* 배너 */}
             <BannerSlider />
 
-            {/* 대표 콘텐츠 */}
+            {/* 더온 오리지널 섹션 */}
             <section className="mb-8">
-              <div className="flex gap-[30px]">
-                {/* 좌측 대표 콘텐츠 450px */}
+              <SectionHeader title="✨ 더온 오리지널" moreLink="/category/original" moreText="전체보기" />
+              <div className="flex gap-[30px] mt-4">
+                {/* 좌측: 메인 카드 */}
                 <div className="w-[450px] flex-shrink-0">
-                  {featuredLoading ? (
+                  {originalLoading ? (
                     <div className="aspect-video bg-gray-200 rounded-2xl flex items-center justify-center">
                       <span className="text-gray-400">로딩 중...</span>
                     </div>
                   ) : (
-                    <FeaturedCard article={featuredArticle} />
+                    <OriginalMainCard article={mainOriginal} />
                   )}
                 </div>
 
-                {/* 우측 슬라이딩 */}
-                <div className="flex-1 overflow-hidden rounded-xl" style={{ height: '253px' }}>
-                  {recentLoading ? (
+                {/* 우측: 세로 슬라이딩 */}
+                <div className="flex-1 overflow-hidden rounded-xl border border-gray-100" style={{ height: '253px' }}>
+                  {originalLoading ? (
                     <div className="h-full flex items-center justify-center text-gray-400">로딩 중...</div>
                   ) : (
-                    <VerticalSlider articles={recentArticles} />
+                    <OriginalVerticalSlider articles={sliderOriginals} />
                   )}
                 </div>
               </div>
@@ -271,12 +316,14 @@ export default function HomePage() {
                 <ArticleSection 
                   title="지역소식" 
                   moreLink="/category/news" 
+                  categorySlug="news"
                   articles={newsArticles} 
                   loading={newsLoading} 
                 />
                 <ArticleSection 
                   title="생활/정보" 
                   moreLink="/category/life" 
+                  categorySlug="life"
                   articles={lifeArticles} 
                   loading={lifeLoading} 
                 />
@@ -287,12 +334,14 @@ export default function HomePage() {
                 <ArticleSection 
                   title="문화/여가" 
                   moreLink="/category/culture" 
+                  categorySlug="culture"
                   articles={cultureArticles} 
                   loading={cultureLoading} 
                 />
                 <ArticleSection 
                   title="여행/관광" 
                   moreLink="/category/travel" 
+                  categorySlug="travel"
                   articles={travelArticles} 
                   loading={travelLoading} 
                 />
@@ -340,14 +389,14 @@ export default function HomePage() {
 
               {/* 커뮤니티 */}
               <div className="bg-white rounded-2xl p-6">
-                <SectionHeader title="커뮤니티" moreLink="/community" />
+                <SectionHeader title="커뮤니티" moreLink="/category/community" />
                 {communityLoading ? (
                   <div className="py-4 text-center text-gray-400">로딩 중...</div>
                 ) : communityArticles.length > 0 ? (
                   <ul className="space-y-4">
                     {communityArticles.map((post) => (
                       <li key={post.id}>
-                        <Link to={`/article/${post.id}`} className="block group">
+                        <Link to={`/category/community?article=${post.id}`} className="block group">
                           <p className="text-sm text-gray-700 group-hover:text-primary-600 truncate">
                             {post.title}
                           </p>
